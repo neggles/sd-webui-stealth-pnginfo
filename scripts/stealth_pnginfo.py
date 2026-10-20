@@ -1,4 +1,9 @@
-from modules import script_callbacks, shared, generation_parameters_copypaste
+from modules import script_callbacks, shared
+try:
+    # Forge Neo renamed generation_parameters_copypaste to infotext_utils
+    from modules import infotext_utils as generation_parameters_copypaste
+except ImportError:
+    from modules import generation_parameters_copypaste
 from modules.script_callbacks import ImageSaveParams
 import gradio as gr
 from modules import images
@@ -276,7 +281,7 @@ def on_after_component_change_pnginfo_image_mode(component, **_kwargs):
         component.preprocess = custom_image_preprocess.__get__(component, gr.Image)
 
 
-def stealth_resize_image(resize_mode, im, width, height, upscaler_name=None):
+def stealth_resize_image(resize_mode, im, width, height, upscaler_name=None, **kwargs):
     """
     Resizes an image with the specified resize_mode, width, and height.
 
@@ -294,7 +299,7 @@ def stealth_resize_image(resize_mode, im, width, height, upscaler_name=None):
     if im.mode == 'RGBA':
         im = im.convert('RGB')
 
-    return original_resize_image(resize_mode, im, width, height, upscaler_name)
+    return original_resize_image(resize_mode, im, width, height, upscaler_name, **kwargs)
 
 
 LANCZOS = (Image.Resampling.LANCZOS if hasattr(Image, 'Resampling') else Image.LANCZOS)
